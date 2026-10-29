@@ -181,12 +181,68 @@ textarea.typebox{min-height:110px}
 .mock div{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--muted)}
 .mock div.hl{background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--ink);font-weight:700;border-left:5px solid var(--accent)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:15px;font-weight:600;z-index:30;max-width:calc(100% - 32px)}
+/* ---------- ZÁLOŽKY ---------- */
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--line);background:var(--surface)}
+.tab{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 8px;color:var(--muted);font:700 13px/1 var(--body)}
+.tab svg{width:24px;height:24px}
+.tab.on{color:var(--accent)}
+.sub{font-size:15px;padding-bottom:10px}
+.small{font-size:13px}
+/* ---------- GRAMATIKA ---------- */
+.gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--accent);color:var(--accent);text-align:center;font-weight:800}
+.rc h2{font-size:28px}
+.rl{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:16px}
+.rl i{font-style:normal;font-weight:700}
+.gtabW{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-inline:-4px}
+.gtab{border-collapse:collapse;font-size:15px;min-width:100%}
+.gtab th,.gtab td{border:1px solid var(--line);padding:6px 8px;text-align:left;white-space:nowrap}
+.gtab th{background:var(--chip);font-weight:700;font-size:13px}
+.gtab td:first-child{color:var(--muted);font-weight:600}
+.exRow{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.exRow .speak{width:44px;height:44px}
+.exRow .speak svg{width:22px;height:22px}
+.exDe2{font-size:17px;font-weight:700}
+.trap{display:flex;flex-direction:column;gap:4px;background:var(--bad-bg);border-radius:12px;padding:10px 12px;font-size:15px}
+.trap b{color:var(--bad);font-family:var(--display);text-transform:uppercase;letter-spacing:.06em}
+.trap s{color:var(--muted)}
+.lvl.locked{opacity:.6}
+.lvlActs{display:flex;flex-wrap:wrap;gap:8px}
+.chipBtn{background:var(--surface);border:2px solid var(--line);border-radius:99px;padding:7px 14px;font-weight:700;font-size:14px}
+.chipBtn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chipBtn.hot{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chipBtn.ok{background:var(--good-bg);color:var(--good);border-color:var(--good-bg)}
+.tlist{display:flex;flex-direction:column;background:var(--surface);border:2px solid var(--line);border-radius:14px;overflow:hidden}
+.trow{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 12px;font-size:16px;font-weight:600}
+.trow:last-child{border-bottom:0}
+.trow .tn{color:var(--muted);font:700 15px/1 var(--display);text-align:center}
+.tc{font-size:12px;font-weight:700;padding:4px 9px;border-radius:99px;background:var(--chip);color:var(--muted);white-space:nowrap}
+.tc.learn{background:color-mix(in srgb,var(--gold) 25%,var(--chip));color:var(--ink)}
+.tc.done{background:var(--good-bg);color:var(--good)}
+.gnews{text-align:left}
+/* ---------- SLOVNÍČEK ---------- */
+.dtools{display:flex;flex-direction:column;gap:10px;padding-bottom:10px}
+.dsearch{min-height:50px;font-size:18px;padding:10px 14px}
+.dsel{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;color:var(--ink)}
+.dchips{display:flex;gap:8px;flex-wrap:wrap}
+.dlist{display:flex;flex-direction:column;gap:6px;padding-block:8px 24px}
+.drow{background:var(--surface);border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.dmain{width:100%;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:10px 12px}
+.dtx{display:flex;flex-direction:column;min-width:0}
+.dtx b{font-size:17px;overflow-wrap:anywhere}
+.dtx span{font-size:15px;color:var(--muted);overflow-wrap:anywhere}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--chip);border:2px solid var(--line)}
+.dot.learn{background:var(--gold);border-color:var(--gold)}
+.dot.done{background:var(--good);border-color:var(--good)}
+.ddet{display:flex;flex-direction:column;gap:6px;padding:0 12px 12px;font-size:15px}
+.ddet .speak{width:44px;height:44px}
+.ddet .speak svg{width:22px;height:22px}
 @media (prefers-reduced-motion:reduce){.prog i{transition:none}.btn:active,.speak:active{transform:none}}
 </style>
 
 </head>
 <body>
 <div id="app" class="screen"></div>
+<script src="gramatika.js"></script>
 
 <script>
 (function(){
@@ -237,11 +293,16 @@ let UNITS_ALL = COURSE;
 
 /* ================= STAV + UKLÁDÁNÍ ================= */
 const LS = "deutsch-jeden-tag-v1";
-let S = {v:2, days:{}, cards:{}, extra:[], xp:0, updated:0};
+let S = {v:2, days:{}, cards:{}, extra:[], xp:0, updated:0, g:{t:{}, it:{}, lv:{}, blitz:{}}};
 let doc = null, syncState = "local", saveT = null, chain = Promise.resolve();
 function norm(o){
   return {v:Number(o&&o.v)||1, days:(o&&o.days&&typeof o.days==="object")?o.days:{}, cards:(o&&o.cards&&typeof o.cards==="object")?o.cards:{},
-    extra:Array.isArray(o&&o.extra)?o.extra:[], xp:Number(o&&o.xp)||0, updated:Number(o&&o.updated)||0};
+    extra:Array.isArray(o&&o.extra)?o.extra:[], xp:Number(o&&o.xp)||0, updated:Number(o&&o.updated)||0, g:normG(o&&o.g)};
+}
+function normG(g){
+  g = (g && typeof g === "object") ? g : {};
+  ["t","it","lv","blitz"].forEach(k => { if (!g[k] || typeof g[k] !== "object") g[k] = {}; });
+  return g;
 }
 function lsRead(){ try{ const t = localStorage.getItem(LS); return t ? norm(JSON.parse(t)) : null; }catch(e){ return null; } }
 function lsWrite(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
@@ -322,6 +383,8 @@ function ringSvg(frac){
   return `<svg viewBox="0 0 132 132" aria-hidden="true"><circle cx="66" cy="66" r="${r}" fill="none" stroke="var(--chip)" stroke-width="14"/><circle cx="66" cy="66" r="${r}" fill="none" stroke="${f>=1?'var(--gold)':'var(--accent)'}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-f)}"/></svg>`;
 }
 function renderHome(){
+  if (TAB === "gram") return renderGram();
+  if (TAB === "dict") return renderDict();
   buildIndex();
   app.innerHTML = "";
   const scr = el("div","scroll"); app.append(scr);
@@ -364,9 +427,10 @@ function renderHome(){
     p.append(n);
   }
 
+  if (GT.length) { const gc = gramCard(true); gc.style.marginBottom = "12px"; gc.style.cursor = "pointer"; gc.onclick = () => { TAB = "gram"; pref("tab","gram"); renderHome(); }; p.append(gc); }
   if (cur) {
     const lc = el("div","lessonCard");
-    lc.append(el("span","label", "Teď se učíš · " + cur.unitT));
+    lc.append(el("span","label", "Slovíčka · " + cur.unitT));
     lc.append(el("h2", null, cur.t));
     const done = cur.ids.filter(id => S.cards[id]).length;
     lc.append(el("div","muted", `${done} z ${cur.ids.length} položek v lekci`));
@@ -416,6 +480,7 @@ function renderHome(){
   foot.append(el("span",null, `${learnedCount()} slov · ${S.xp} XP`));
   foot.append(el("span",null, "Pokrok je uložený v tomto telefonu"));
   p.append(foot);
+  addTabbar();
 }
 
 /* ================= TRÉNINK ================= */
@@ -440,15 +505,19 @@ function nextNew(n){
 }
 function startSession(){
   buildIndex();
-  const due = dueIds().slice(0, 10);
-  const fresh = nextNew(5);
+  const GS = GT.length ? gramSteps() : {A:[], B:[]};
+  const gN = GS.A.length + GS.B.length, test = GS.A.length > 10;
+  const due = dueIds().slice(0, test ? 5 : gN ? 8 : 10);
+  const fresh = nextNew(test ? 0 : gN ? 3 : 5);
   const steps = [];
   const rev = shuffle(due.map(id => ({type:typesFor(id,true), id, review:true})));
-  steps.push(...rev.slice(0, 4));
+  steps.push(...rev.slice(0, test ? 0 : 3));
+  steps.push(...GS.A);
   fresh.forEach(id => { steps.push({type:"intro", id}); steps.push({type:"mc_cz", id, fresh:true}); });
-  steps.push(...rev.slice(4));
+  steps.push(...rev.slice(test ? 0 : 3));
   shuffle(fresh.slice()).forEach(id => { const it = ITEMS[id];
     steps.push({type: pick(it.sent ? ["build","mc_de"] : it.noun ? ["article","mc_de","type"] : it.hasEx ? ["mc_de","build","type"] : ["mc_de","type"]), id, fresh:true}); });
+  steps.push(...GS.B);
   // když je málo práce, procvič nejslabší slova
   if (steps.length < 10) {
     const known = Object.keys(S.cards).filter(id => ITEMS[id] && !due.includes(id) && !fresh.includes(id));
@@ -459,7 +528,7 @@ function startSession(){
   const pool = Object.keys(S.cards).filter(id => ITEMS[id] && S.cards[id][4] >= 1 && ITEMS[id].exDe.split(/\s+/).length >= 3 && ITEMS[id].exCz);
   if (pool.length >= 4) steps.push({type: "ai", id: pick(pool), practice:true});
   if (!steps.length) { toast("Zatím tu nic není."); return; }
-  ses = {steps, i:0, graded:new Set(), right:0, wrong:0, xp:0, last:Date.now(), startSec:secToday(), noListen:false};
+  ses = newSes(steps);
   renderStep();
 }
 function tick(){
@@ -470,7 +539,7 @@ function tick(){
 function renderStep(){
   const step = ses.steps[ses.i];
   if (!step) return renderResult();
-  const it = ITEMS[step.id];
+  const it = step.id ? ITEMS[step.id] : null;
   app.innerHTML = "";
   // horní lišta
   const head = el("div","pad sesTop");
@@ -485,10 +554,11 @@ function renderStep(){
   const btn = el("button","btn","Zkontrolovat"); btn.disabled = true; ap.append(btn);
 
   const E = EX[step.type](step, it, body, ready => { btn.disabled = !ready; }, () => btn.click());
-  if (step.type === "intro") {
-    btn.textContent = "Pokračovat"; btn.disabled = false;
+  if (step.type === "intro" || step.type === "g_rule") {
+    btn.textContent = step.type === "g_rule" ? "Rozumím, jdu to zkusit" : "Pokračovat"; btn.disabled = false;
     btn.onclick = () => {
-      if (!S.cards[it.id]) S.cards[it.id] = [dayNum(), 0, 25, 0, 0];
+      if (step.type === "g_rule") { const T = gT(step.tid); if (!T.seen) T.seen = dayNum(); }
+      else if (!S.cards[it.id]) S.cards[it.id] = [dayNum(), 0, 25, 0, 0];
       S.xp += 2; ses.xp += 2; tick(); save(); ses.i++; renderStep();
     };
     return;
@@ -514,12 +584,17 @@ function renderStep(){
     }
     tick();
     const ok = r.ok;
-    if (!ses.graded.has(step.id) && !step.retry) {
+    if (step.type === "g") {
+      const key = "g:" + step.gid;
+      if (!ses.graded.has(key) && !step.retry) { ses.graded.add(key); gGrade(step, ok); }
+    } else if (!ses.graded.has(step.id) && !step.retry) {
       ses.graded.add(step.id);
       if (!step.practice || !ok) srs(step.id, ok);
     }
     if (ok) { ses.right++; S.xp += 10; ses.xp += 10; buzz(20); }
-    else { ses.wrong++; buzz([40,60,40]); ses.steps.push({type: it.hasEx ? pick(["mc_de","build"]) : "mc_de", id:step.id, retry:true}); }
+    else { ses.wrong++; buzz([40,60,40]);
+      if (step.type === "g") { if (!step.pt && !step.boss) ses.steps.push({type:"g", gid:step.gid, retry:true}); }
+      else ses.steps.push({type: it.hasEx ? pick(["mc_de","build"]) : "mc_de", id:step.id, retry:true}); }
     save();
     // zpětná vazba
     act.className = "action " + (ok ? "ok" : "ko");
@@ -756,6 +831,8 @@ function renderResult(){
     const d = el("div","stat"); d.append(el("b",null,b)); d.append(el("span",null,s)); stats.append(d);
   });
   p.append(stats);
+  const gn = gFinish(ses); if (gn.length) save(true);
+  if (gn.length) { const n = el("div","note gnews"); gn.forEach(t => n.append(el("div", null, t))); p.append(n); }
   const btns = el("div"); btns.style.display = "flex"; btns.style.flexDirection = "column"; btns.style.gap = "12px";
   const again = el("button","btn", met ? "Ještě kolo" : "Další kolo"); again.onclick = startSession;
   const home = el("button","btn ghost","Domů"); home.onclick = renderHome;
@@ -854,7 +931,402 @@ function renderInstalled(){
   const b = el("button","btn ghost","Pokračovat tady"); b.onclick = renderHome; p.append(b);
 }
 
+/* ================= GRAMATIKA ================= */
+const GT = window.GRAM || [], GL = window.GRAM_LEVELS || [];
+const GI = {}, TOP = {};
+GT.forEach((t, ti) => {
+  t.ti = ti; t.gids = []; TOP[t.id] = t;
+  t.items.forEach((a, i) => {
+    const gid = t.id + "." + i, k = a[0];
+    const it = {gid, tid:t.id, k, q:a[1]};
+    if (k === "c") { it.opts = a[2]; it.a = a[2][0]; it.cz = a[3] || ""; it.why = a[4] || ""; }
+    else if (k === "o") { it.a = a[1]; it.cz = a[2] || ""; it.alt = a[3] || []; }
+    else { it.a = a[2]; it.cz = a[3] || ""; it.why = a[4] || ""; it.alt = a[5] || []; }
+    GI[gid] = it; t.gids.push(gid);
+  });
+});
+const isBonusLvl = n => !!(GL.find(l => l.n === n) || {}).bonus;
+const CORE_T = GT.filter(t => !isBonusLvl(t.l));
+function gS(){ if (!S.g) S.g = {t:{}, it:{}, lv:{}, blitz:{}}; return S.g; }
+function gT(tid){ const g = gS(); return g.t[tid] || (g.t[tid] = {seen:0, clean:[], kinds:[], d:0, run:0, dk:[]}); }
+function gTr(tid){ return gS().t[tid] || null; }
+function gLv(n){ const g = gS(); return g.lv[n] || (g.lv[n] = {pt:false, boss:false, best:0}); }
+function gMastered(tid){ const T = gTr(tid); return !!T && T.clean.length >= 3 && T.kinds.length >= 2; }
+function gStarted(tid){ const T = gTr(tid); return !!T && T.clean.length >= 1; }
+function gSeen(tid){ const T = gTr(tid); return !!T && (T.seen || T.clean.length); }
+function levelTopics(n){ return GT.filter(t => t.l === n); }
+function masteredCount(list){ return (list || CORE_T).filter(t => gMastered(t.id)).length; }
+function lvlReached(n){ if (n === 1) return true; const p = GL.find(l => l.n === n - 1); return !p || gLv(n - 1).boss || (p.bonus); }
+/* co je na řadě: vstupní test / nové téma / závěrečný test */
+function gTarget(){
+  for (const L of GL) {
+    const ts = levelTopics(L.n); if (!ts.length) continue;
+    const lv = gLv(L.n);
+    if (!L.bonus && !lv.pt && !ts.some(t => gSeen(t.id))) return {pt:L.n};
+    const cur = ts.find(t => !gStarted(t.id));
+    if (cur) return {topic:cur};
+    if (!L.bonus && !lv.boss) return {boss:L.n};
+  }
+  return null;
+}
+function gPick(tid, n, prefer){
+  const t = TOP[tid], T = gTr(tid) || {kinds:[]};
+  const ids = shuffle(t.gids.slice());
+  if (prefer) ids.sort((a, b) => (T.kinds.includes(GI[a].k) ? 1 : 0) - (T.kinds.includes(GI[b].k) ? 1 : 0));
+  const out = ids.slice(0, n);
+  const kinds = new Set(out.map(id => GI[id].k));
+  if (kinds.size < 2) { const other = ids.slice(n).find(id => !kinds.has(GI[id].k)); if (other) out[out.length - 1] = other; }
+  return shuffle(out);
+}
+function gReviewTopic(excl){
+  const t = dayNum();
+  const c = GT.filter(x => x.id !== excl && gStarted(x.id) && !gMastered(x.id) && !gTr(x.id).clean.includes(t));
+  c.sort((a, b) => Math.max(...gTr(a.id).clean) - Math.max(...gTr(b.id).clean));
+  return c[0] || null;
+}
+function gDue(n){
+  const t = dayNum(), it = gS().it;
+  return Object.keys(it).filter(id => GI[id] && it[id][0] <= t && gMastered(GI[id].tid)).sort((a, b) => it[a][0] - it[b][0]).slice(0, n);
+}
+function gsrs(id, ok){
+  const t = dayNum(), g = gS(); const c = g.it[id] || [t,0,25,0,0];
+  let [due, ivl, ease, lapses, reps] = c;
+  if (ok) { ivl = ivl < 1 ? 1 : ivl < 2 ? 3 : Math.max(ivl + 1, Math.round(ivl * ease / 10)); ease = Math.min(30, ease + 1); reps++; }
+  else { lapses++; ease = Math.max(13, ease - 2); ivl = 0; }
+  g.it[id] = [t + Math.max(1, ivl), ivl, ease, lapses, reps];
+}
+function gramSteps(){
+  const tg = gTarget(), A = [], B = [];
+  if (tg && tg.pt) { levelTopics(tg.pt).forEach(t => gPick(t.id, 2).forEach(gid => A.push({type:"g", gid, pt:tg.pt}))); return {A, B}; }
+  if (tg && tg.boss) { shuffle(levelTopics(tg.boss).flatMap(t => t.gids)).slice(0, 15).forEach(gid => A.push({type:"g", gid, boss:tg.boss})); }
+  if (tg && tg.topic) {
+    if (!gSeen(tg.topic.id)) A.push({type:"g_rule", tid:tg.topic.id});
+    gPick(tg.topic.id, 6).forEach(gid => A.push({type:"g", gid}));
+  }
+  const rv = gReviewTopic(tg && tg.topic && tg.topic.id);
+  if (rv && !(tg && tg.boss)) gPick(rv.id, 5, true).forEach(gid => B.push({type:"g", gid}));
+  gDue(3).forEach(gid => B.push({type:"g", gid}));
+  return {A, B};
+}
+/* vyhodnocení jedné odpovědi */
+function gGrade(step, ok){
+  const it = GI[step.gid]; if (!it) return;
+  gsrs(step.gid, ok);
+  if (step.pt) { const r = ses.ptRes[it.tid] || (ses.ptRes[it.tid] = {ok:0, n:0, k:[]}); r.n++; if (ok) { r.ok++; r.k.push(it.k); } return; }
+  if (step.boss) { ses.bossN++; if (ok) ses.bossOk++; }
+  const T = gT(it.tid), t = dayNum(), name = TOP[it.tid].t;
+  if (!T.seen) T.seen = t;
+  if (T.d !== t) { T.d = t; T.run = 0; T.dk = []; }
+  const wasM = gMastered(it.tid);
+  if (!ok) { T.run = 0; T.dk = []; return; }
+  T.run++; if (!T.dk.includes(it.k)) T.dk.push(it.k);
+  if (T.clean.includes(t)) { if (!T.kinds.includes(it.k)) T.kinds.push(it.k); }
+  else if (T.run >= 5) {
+    T.clean.push(t); T.dk.forEach(k => { if (!T.kinds.includes(k)) T.kinds.push(k); });
+    if (!gMastered(it.tid)) ses.gNews.push(`${name}: čistá série ${T.clean.length}/3`);
+  }
+  if (!wasM && gMastered(it.tid)) ses.gNews.push(`Zvládnuto na 100 %: ${name}`);
+}
+function gFinish(s){
+  const out = [];
+  if (s.ptLvl) {
+    const ts = levelTopics(s.ptLvl), t = dayNum(); let n = 0;
+    ts.forEach(tp => { const r = s.ptRes[tp.id];
+      if (r && r.n >= 2 && r.ok === r.n) { n++; const T = gT(tp.id); T.seen = T.seen || t; if (!T.clean.includes(t)) T.clean.push(t); r.k.forEach(k => { if (!T.kinds.includes(k)) T.kinds.push(k); }); } });
+    gLv(s.ptLvl).pt = true;
+    out.push(n ? `Vstupní test: ${n} z ${ts.length} témat umíš, ty se přeskočí (ještě je ověříme ve 2 dalších dnech).` : `Vstupní test hotový. Začínáme od prvního tématu.`);
+  }
+  if (s.bossLvl && s.bossN) {
+    const lv = gLv(s.bossLvl), pc = Math.round(s.bossOk / s.bossN * 100);
+    lv.best = Math.max(lv.best || 0, pc);
+    if (pc >= 90) { lv.boss = true; out.push(`Závěrečný test úrovně ${s.bossLvl}: ${pc} %. Úroveň ${s.bossLvl} splněná, odemyká se další.`); }
+    else out.push(`Závěrečný test úrovně ${s.bossLvl}: ${pc} %. Potřebuješ 90 %, zkusíš to v dalším kole.`);
+  }
+  return out.concat(s.gNews || []);
+}
+function newSes(steps){
+  const ptS = steps.find(x => x.pt), bS = steps.find(x => x.boss);
+  return {steps, i:0, graded:new Set(), right:0, wrong:0, xp:0, last:Date.now(), startSec:secToday(), noListen:false,
+    ptRes:{}, ptLvl: ptS ? ptS.pt : 0, bossLvl: bS ? bS.boss : 0, bossOk:0, bossN:0, gNews:[]};
+}
+function startTopic(tid){
+  buildIndex();
+  const steps = [];
+  if (!gSeen(tid)) steps.push({type:"g_rule", tid});
+  gPick(tid, Math.min(10, TOP[tid].gids.length)).forEach(gid => steps.push({type:"g", gid}));
+  ses = newSes(steps); renderStep();
+}
+function startPt(n){ buildIndex(); const st = []; levelTopics(n).forEach(t => gPick(t.id, 2).forEach(gid => st.push({type:"g", gid, pt:n}))); ses = newSes(st); renderStep(); }
+function startBoss(n){ buildIndex(); ses = newSes(shuffle(levelTopics(n).flatMap(t => t.gids)).slice(0, 15).map(gid => ({type:"g", gid, boss:n}))); renderStep(); }
+
+/* ---------- vykreslení ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const GAP = /___( ___)*/;
+function gapHtml(q){ return esc(q).replace(GAP, '<span class="gap">&nbsp;?&nbsp;</span>'); }
+function deSpeak(s){ let x = s; if (x.includes(":")) x = x.split(":").slice(1).join(":"); return x.replace(/\s*\([^)]*\)/g, "").replace(/→/g, ",").trim(); }
+function ruleCard(t){
+  const c = el("div","card rc");
+  c.append(el("span","label", `Úroveň ${t.l} · tahák`));
+  c.append(el("h2", null, t.t));
+  if (t.why) c.append(el("div","muted", t.why));
+  const ul = el("ul","rl"); t.rule.forEach(r => { const li = el("li"); li.innerHTML = r; ul.append(li); }); c.append(ul);
+  if (t.tab) {
+    const w = el("div","gtabW"); const tb = el("table","gtab");
+    const hr = el("tr"); t.tab.h.forEach(h => hr.append(el("th", null, h))); tb.append(hr);
+    t.tab.r.forEach(r => { const tr = el("tr"); r.forEach(x => tr.append(el("td", null, x))); tb.append(tr); });
+    w.append(tb); c.append(w);
+  }
+  (t.ex || []).forEach(([de, cz]) => { const r = el("div","exRow"); r.append(speakBtn(de)); const tx = el("div"); tx.append(el("div","exDe2", de)); tx.append(el("div","muted", cz)); r.append(tx); c.append(r); });
+  if (t.trap) { const tp = el("div","trap"); tp.innerHTML = "<b>Past</b><span>" + t.trap + "</span>"; c.append(tp); }
+  return c;
+}
+EX.g_rule = function(step, it, body){
+  const t = TOP[step.tid];
+  kindLabel(body, "Nové gramatické pravidlo", true);
+  body.append(ruleCard(t));
+  return {};
+};
+EX.g = function(step, _it, body, ready, submit){
+  const it = GI[step.gid], t = TOP[it.tid];
+  body.append(el("span","label", (step.pt ? "Vstupní test · " : step.boss ? "Závěrečný test · " : "Gramatika · ") + t.t));
+  const hasGap = GAP.test(it.q);
+  const full = hasGap ? it.q.replace(GAP, it.a) : it.a;
+  const fullClean = full.replace(/\s*\([^)]*\)/g, "").trim();
+  if (it.k === "c") {
+    kindLabel(body, hasGap ? "Co patří do mezery?" : "Vyber správnou odpověď");
+    const pr = el("div","prompt"); pr.innerHTML = gapHtml(it.q); body.append(pr);
+    if (it.cz) body.append(el("div","hint", it.cz));
+    const opts = shuffle(it.opts.slice());
+    if (opts.length <= 3 && opts.every(o => o.length <= 6)) {
+      const box = el("div","arts"); let sel = null; const btns = {};
+      opts.forEach(a => { const b = el("button","opt", a); b.setAttribute("aria-pressed","false"); btns[a] = b;
+        b.onclick = () => { Object.values(btns).forEach(x => x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); sel = a; ready(true); }; box.append(b); });
+      body.append(box);
+      return {check(){ const ok = sel === it.a; btns[it.a].classList.add("right"); if (!ok && sel) btns[sel].classList.add("wrong");
+        return {ok, correct: hasGap ? fullClean : it.a, note: it.why, show:true, speak: deSpeak(hasGap ? full : it.a)}; }};
+    }
+    const o = options(body, opts, () => ready(true));
+    return {check(){ const ok = o.get() === it.a; o.mark(it.a); return {ok, correct: hasGap ? fullClean : it.a, note: it.why, show:true, speak: deSpeak(hasGap ? full : it.a)}; }};
+  }
+  if (it.k === "o") {
+    kindLabel(body, "Slož větu ve správném pořadí");
+    body.append(el("div","prompt", it.cz));
+    const get = tilesUI(body, sentenceTokens(it.a), [], ready);
+    return {check(){ const a = normTxt(get()); const ok = [it.a].concat(it.alt).some(s => normTxt(s) === a);
+      return {ok, correct: it.a, note: ok ? "" : (it.alt.length ? "Jde i: " + it.alt.join(" / ") : ""), show:true, speak: it.a}; }};
+  }
+  kindLabel(body, "Doplň do mezery");
+  const pr = el("div","prompt"); pr.innerHTML = gapHtml(it.q); body.append(pr);
+  if (it.cz) body.append(el("div","hint", it.cz));
+  const get = typeUI(body, false, ready, submit);
+  return {check(){
+    const a = normTxt(get());
+    const ok = [it.a].concat(it.alt).some(s => normTxt(s) === a) || a === normTxt(fullClean);
+    return {ok, correct: fullClean, note: it.why, show:true, speak: deSpeak(full)};
+  }};
+};
+
+/* ---------- záložky ---------- */
+let TAB = pref("tab") || "train";
+const TABICON = {
+  train:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor"/></svg>',
+  gram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"/><path d="m16 16 2 2 4-4"/></svg>',
+  dict:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>'
+};
+function addTabbar(){
+  const bar = el("nav","tabbar");
+  [["train","Trénink"],["gram","Gramatika"],["dict","Slovníček"]].forEach(([k, n]) => {
+    const b = el("button","tab" + (TAB === k ? " on" : "")); b.innerHTML = TABICON[k] + `<span>${n}</span>`;
+    if (TAB === k) b.setAttribute("aria-current","page");
+    b.onclick = () => { TAB = k; pref("tab", k); renderHome(); };
+    bar.append(b);
+  });
+  app.append(bar);
+}
+function shell(title, sub){
+  buildIndex();
+  app.innerHTML = "";
+  const scr = el("div","scroll"); app.append(scr);
+  const p = el("div","pad"); scr.append(p);
+  const top = el("div","top"); const br = el("div","brand"); br.innerHTML = title; top.append(br); p.append(top);
+  if (sub) p.append(el("div","muted sub", sub));
+  return {scr, p};
+}
+
+/* ---------- záložka Gramatika ---------- */
+function topicChip(t){
+  const T = gTr(t.id);
+  if (gMastered(t.id)) return ["done","100 %"];
+  if (T && T.clean.length) return ["learn", `${T.clean.length}/3`];
+  if (T && T.seen) return ["learn","rozjeté"];
+  return ["", "nové"];
+}
+function gramCard(compact){
+  const tg = gTarget();
+  const lc = el("div","lessonCard");
+  lc.append(el("span","label","Gramatika dnes"));
+  if (!tg) { lc.append(el("h2",null,"Osnova hotová")); lc.append(el("div","muted","Už jen opakuješ, co umíš.")); }
+  else if (tg.pt) { lc.append(el("h2",null,`Vstupní test · úroveň ${tg.pt}`)); lc.append(el("div","muted","Dvě otázky na každé téma. Co už umíš, se přeskočí.")); }
+  else if (tg.boss) { lc.append(el("h2",null,`Závěrečný test · úroveň ${tg.boss}`)); lc.append(el("div","muted","15 otázek z celé úrovně. Na splnění potřebuješ 90 %.")); }
+  else { const lt = levelTopics(tg.topic.l);
+    lc.append(el("h2",null,tg.topic.t));
+    lc.append(el("div","muted",`Úroveň ${tg.topic.l} · téma ${lt.indexOf(tg.topic)+1} z ${lt.length}${compact ? "" : " · " + tg.topic.why}`)); }
+  const m = masteredCount();
+  const bar = el("div","bar"); const bi = el("i"); bi.style.width = (m / CORE_T.length * 100) + "%"; bar.append(bi);
+  lc.append(bar); lc.append(el("div","muted small", `Zvládnuto ${m} z ${CORE_T.length} témat do úrovně B1`));
+  return lc;
+}
+function renderGram(){
+  const {p} = shell("Gram<b>atika</b>", "Osnova podle rozsahu zkoušky Goethe-Zertifikat B1. Téma je na 100 %, když ho dáš 3× v různých dnech bez chyby (5 v řadě) a aspoň dvěma typy cvičení.");
+  p.append(gramCard(false));
+  const path = el("div","path");
+  GL.forEach(L => {
+    const ts = levelTopics(L.n); if (!ts.length) return;
+    const lv = gLv(L.n), reached = lvlReached(L.n);
+    const box = el("div","unit lvl" + (reached ? "" : " locked"));
+    const h = el("div","unitHead"); h.append(el("h2",null,`${L.n}. ${L.t}`)); h.append(el("span",null,`${L.cefr} · ${masteredCount(ts)}/${ts.length}`)); box.append(h);
+    box.append(el("div","muted small", L.sub + (reached ? "" : " Odemkne se po závěrečném testu předchozí úrovně.")));
+    const bar = el("div","bar"); const bi = el("i"); bi.style.width = (masteredCount(ts) / ts.length * 100) + "%"; bar.append(bi); box.append(bar);
+    const acts = el("div","lvlActs");
+    if (!L.bonus && reached && !lv.pt && !ts.some(t => gSeen(t.id))) { const b = el("button","chipBtn","Vstupní test"); b.onclick = () => startPt(L.n); acts.append(b); }
+    if (ts.some(t => gSeen(t.id))) { const b = el("button","chipBtn","Blitz 60 s"); b.onclick = () => renderBlitz(L.n); acts.append(b); }
+    if (!L.bonus && ts.every(t => gStarted(t.id))) {
+      const b = el("button","chipBtn" + (lv.boss ? " ok" : " hot"), lv.boss ? `Test splněn · ${lv.best} %` : "Závěrečný test"); b.onclick = () => startBoss(L.n); acts.append(b); }
+    if (acts.childNodes.length) box.append(acts);
+    const list = el("div","tlist");
+    ts.forEach((t, i) => {
+      const [cls, txt] = topicChip(t);
+      const r = el("button","trow"); r.append(el("span","tn", String(i+1)));
+      r.append(el("span","tt", t.t)); r.append(el("span","tc " + cls, txt));
+      r.onclick = () => renderTopic(t.id); list.append(r);
+    });
+    box.append(list); path.append(box);
+  });
+  p.append(path);
+  addTabbar();
+}
+function renderTopic(tid){
+  const t = TOP[tid], T = gTr(tid);
+  const {p} = shell("Gram<b>atika</b>");
+  const back = el("button","link","← Zpět na osnovu"); back.style.alignSelf = "flex-start"; back.style.paddingLeft = "0"; back.onclick = renderGram; p.append(back);
+  p.append(ruleCard(t));
+  const st = el("div","note");
+  const cl = T ? T.clean.length : 0, kd = T ? T.kinds.length : 0;
+  st.append(el("b", null, gMastered(tid) ? "Zvládnuto na 100 %" : `Čisté série: ${Math.min(cl,3)}/3 · typy cvičení: ${Math.min(kd,2)}/2`));
+  st.append(el("span","muted", gMastered(tid) ? "Dál se ti vrací jen v opakování, aby nevyprchalo." : "Série = 5 správně za sebou v jednom dni. Každá musí být v jiném dni."));
+  p.append(st);
+  const go = el("button","btn", `Procvičit (${Math.min(10, t.gids.length)} otázek)`); go.onclick = () => startTopic(tid);
+  const wrap = el("div","startWrap"); wrap.append(go); p.append(wrap);
+  addTabbar();
+}
+
+/* ---------- Blitz ---------- */
+function renderBlitz(n){
+  buildIndex();
+  let pool = levelTopics(n).filter(t => gSeen(t.id)).flatMap(t => t.gids).filter(id => GI[id].k === "c");
+  if (pool.length < 4) pool = levelTopics(n).flatMap(t => t.gids).filter(id => GI[id].k === "c");
+  let q = shuffle(pool.slice()), qi = 0, score = 0, miss = 0, lock = false;
+  const t0 = Date.now(), DUR = 60000;
+  app.innerHTML = "";
+  const head = el("div","pad sesTop");
+  const x = el("button","close"); x.innerHTML = ICON.close; x.setAttribute("aria-label","Ukončit");
+  const prog = el("div","prog"); const pi = el("i"); prog.append(pi);
+  const sc = el("div","mins","0"); head.append(x, prog, sc); app.append(head);
+  const scr = el("div","scroll"); const body = el("div","pad ex"); scr.append(body); app.append(scr);
+  let timer;
+  const finish = () => {
+    clearInterval(timer);
+    const k = dayKey(); S.days[k] = (S.days[k] || 0) + Math.min(DUR, Date.now() - t0) / 1000;
+    const g = gS(); const best = g.blitz[n] || 0; const rec = score > best; if (rec) g.blitz[n] = score;
+    S.xp += score * 3; save(true);
+    app.innerHTML = "";
+    const p = el("div","pad result"); app.append(p);
+    p.append(el("span","label",`Blitz · úroveň ${n}`));
+    p.append(el("h1", rec ? "gold" : null, `${score} správně`));
+    p.append(el("div","muted", rec ? "Nový rekord!" : `Rekord: ${best}`));
+    const stats = el("div","stats");
+    [[score,"správně"],[miss,"chyby"],[Math.floor(secToday()/60)+"/10","minut dnes"]].forEach(([b, s]) => { const d = el("div","stat"); d.append(el("b",null,b)); d.append(el("span",null,s)); stats.append(d); });
+    p.append(stats);
+    const again = el("button","btn","Znovu"); again.onclick = () => renderBlitz(n);
+    const home = el("button","btn ghost","Zpět"); home.onclick = renderHome;
+    const bw = el("div"); bw.style.display = "flex"; bw.style.flexDirection = "column"; bw.style.gap = "12px"; bw.append(again, home); p.append(bw);
+  };
+  x.onclick = finish;
+  const show = () => {
+    if (qi >= q.length) { q = shuffle(pool.slice()); qi = 0; }
+    const it = GI[q[qi++]]; body.innerHTML = ""; lock = false;
+    body.append(el("span","label", TOP[it.tid].t));
+    const pr = el("div","prompt"); pr.innerHTML = gapHtml(it.q); body.append(pr);
+    const opts = shuffle(it.opts.slice());
+    const box = el("div", opts.every(o => o.length <= 6) && opts.length <= 3 ? "arts" : "opts");
+    opts.forEach(a => { const b = el("button","opt", a); box.append(b);
+      b.onclick = () => { if (lock) return; lock = true;
+        if (a === it.a) { score++; b.classList.add("right"); buzz(15); sc.textContent = score; setTimeout(show, 250); }
+        else { miss++; b.classList.add("wrong"); [...box.children].forEach(c => { if (c.textContent === it.a) c.classList.add("right"); }); buzz([40,60,40]); setTimeout(show, 1100); } }; });
+    body.append(box);
+  };
+  timer = setInterval(() => { const f = (Date.now() - t0) / DUR; pi.style.width = Math.min(100, f * 100) + "%"; if (f >= 1) finish(); }, 200);
+  show();
+}
+
+/* ---------- záložka Slovníček ---------- */
+const fold = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss");
+let dictQ = "", dictU = "", dictF = "all", dictN = 60;
+function dictStatus(id){ const c = S.cards[id]; if (!c) return "new"; return c[1] >= 7 ? "done" : "learn"; }
+function renderDict(){
+  const total = Object.keys(ITEMS).length || 0;
+  const {p} = shell("Slov<b>níček</b>");
+  const all = Object.values(ITEMS);
+  p.append(el("div","muted sub", `${all.length} slov a frází ze slovníku Němčina 6034 · umíš ${all.filter(o => dictStatus(o.id) === "done").length}, učíš se ${all.filter(o => dictStatus(o.id) === "learn").length}`));
+  const tools = el("div","dtools");
+  const inp = el("input","typebox dsearch"); inp.type = "search"; inp.placeholder = "Hledej česky nebo německy…"; inp.value = dictQ;
+  inp.setAttribute("autocomplete","off"); inp.setAttribute("spellcheck","false");
+  const sel = el("select","dsel"); sel.append(new Option("Všechny kapitoly", ""));
+  UNITS_ALL.forEach((u, i) => sel.append(new Option(u.t, String(i)))); sel.value = dictU;
+  const chips = el("div","dchips");
+  [["all","Vše"],["new","Nové"],["learn","Učím se"],["done","Umím"]].forEach(([k, n]) => {
+    const b = el("button","chipBtn" + (dictF === k ? " on" : ""), n); b.setAttribute("aria-pressed", dictF === k ? "true" : "false");
+    b.onclick = () => { dictF = k; dictN = 60; chips.querySelectorAll("button").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); draw(); };
+    chips.append(b); });
+  tools.append(inp, sel, chips); p.append(tools);
+  const cnt = el("div","muted small"); p.append(cnt);
+  const list = el("div","dlist"); p.append(list);
+  const draw = () => {
+    const q = fold(dictQ.trim());
+    const res = all.filter(o => (dictU === "" || String(o.unit) === dictU) && (dictF === "all" || dictStatus(o.id) === dictF) &&
+      (!q || fold(o.de).includes(q) || fold(o.cz).includes(q)));
+    cnt.textContent = res.length === all.length ? "" : `Nalezeno: ${res.length}`;
+    list.innerHTML = "";
+    res.slice(0, dictN).forEach(o => {
+      const r = el("div","drow");
+      const b = el("button","dmain"); b.setAttribute("aria-expanded","false");
+      const tx = el("span","dtx"); tx.append(el("b",null,o.de)); tx.append(el("span",null,o.cz));
+      b.append(el("i","dot " + dictStatus(o.id)), tx);
+      const det = el("div","ddet"); det.hidden = true;
+      b.onclick = () => {
+        const open = det.hidden; det.hidden = !open; b.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) { say(o.de);
+          if (!det.childNodes.length) {
+            const row = el("div","sayRow"); row.append(speakBtn(o.de)); row.append(el("div","muted", UNITS_ALL[o.unit] ? UNITS_ALL[o.unit].t : "")); det.append(row);
+            if (o.pl) det.append(el("div",null,"množné číslo: " + o.pl));
+            if (o.exDe && o.exDe !== o.de) { det.append(el("div","exDe2", o.exDe)); if (o.exCz) det.append(el("div","muted", o.exCz)); const pb = el("button","link","Přehrát větu"); pb.style.paddingLeft = "0"; pb.onclick = () => say(o.exDe); det.append(pb); }
+            const c = S.cards[o.id]; const st = dictStatus(o.id);
+            det.append(el("div","muted small", st === "new" ? "Ještě nebylo v tréninku. Přijde na řadu automaticky." : (st === "done" ? "Umíš. " : "Učíš se. ") + (c ? `Další opakování ${c[0] - dayNum() <= 0 ? "dnes" : "za " + (c[0] - dayNum()) + " d"}.` : "")));
+          } }
+      };
+      r.append(b, det); list.append(r);
+    });
+    if (res.length > dictN) { const mb = el("button","btn ghost", `Zobrazit dalších ${Math.min(60, res.length - dictN)}`); mb.onclick = () => { dictN += 60; draw(); }; list.append(mb); }
+    if (!res.length) list.append(el("div","muted","Nic nenalezeno."));
+  };
+  let dt; inp.oninput = () => { dictQ = inp.value; dictN = 60; clearTimeout(dt); dt = setTimeout(draw, 120); };
+  sel.onchange = () => { dictU = sel.value; dictN = 60; draw(); };
+  draw();
+  addTabbar();
+}
+
 /* ================= START ================= */
+if (location.hash === "#dbg") window.__dbg = {get ses(){ return ses; }, GI, TOP, get S(){ return S; }, dayNum, gTarget};
 /* převod pokroku z první verze appky na nový slovníček */
 function migrate(st){
   let changed = false;

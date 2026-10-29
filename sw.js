@@ -1,5 +1,5 @@
-const CACHE = 'nemcina-v2';
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-180.png'];
+const CACHE = 'nemcina-v3';
+const CORE = ['./', 'index.html', 'gramatika.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-180.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });
@@ -15,6 +15,13 @@ self.addEventListener('fetch', e => {
     e.respondWith(fetch(e.request).then(r => {
       const cp = r.clone(); caches.open(CACHE).then(c => c.put('index.html', cp)); return r;
     }).catch(() => caches.match('index.html')));
+    return;
+  }
+  // obsah gramatiky: taky nejdřív síť, aby sedl k nové verzi stránky
+  if (new URL(e.request.url).pathname.endsWith('gramatika.js')) {
+    e.respondWith(fetch(e.request).then(r => {
+      const cp = r.clone(); caches.open(CACHE).then(c => c.put('gramatika.js', cp)); return r;
+    }).catch(() => caches.match('gramatika.js')));
     return;
   }
   e.respondWith(caches.match(e.request).then(hit => {
