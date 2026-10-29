@@ -1295,6 +1295,11 @@ function renderDict(){
     const q = fold(dictQ.trim());
     const res = all.filter(o => (dictU === "" || String(o.unit) === dictU) && (dictF === "all" || dictStatus(o.id) === dictF) &&
       (!q || fold(o.de).includes(q) || fold(o.cz).includes(q)));
+    if (q) { const sc = o => { const d = fold(o.de).replace(/^(der|die|das) /, ""), c = fold(o.cz);
+        if (d === q || c === q || c.split(/[,;]\s*/).includes(q)) return 0;
+        if (d.startsWith(q) || c.startsWith(q)) return 1;
+        if ((" " + d).includes(" " + q) || (" " + c).includes(" " + q)) return 2; return 3; };
+      res.sort((a, b) => sc(a) - sc(b) || a.de.length - b.de.length); }
     cnt.textContent = res.length === all.length ? "" : `Nalezeno: ${res.length}`;
     list.innerHTML = "";
     res.slice(0, dictN).forEach(o => {
@@ -1326,7 +1331,7 @@ function renderDict(){
 }
 
 /* ================= START ================= */
-if (location.hash === "#dbg") window.__dbg = {get ses(){ return ses; }, GI, TOP, get S(){ return S; }, dayNum, gTarget};
+if (location.hash === "#dbg") window.__dbg = {get ses(){ return ses; }, GI, TOP, get S(){ return S; }, dayNum, gTarget, startAll: tid => { buildIndex(); ses = newSes(TOP[tid].gids.map(gid => ({type:"g", gid}))); renderStep(); }};
 /* převod pokroku z první verze appky na nový slovníček */
 function migrate(st){
   let changed = false;
